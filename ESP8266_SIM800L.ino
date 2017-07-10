@@ -46,7 +46,6 @@ char buffer[buffer_size+1];          // Data from UART
 char response[buffer_size+1];
 byte xbuff=0;
 
-
 char uart_tam='\0';
 //char c1=0;
 char phone_number[13];
@@ -65,6 +64,11 @@ byte statusmang=0;
 byte statusnaptk=0;
 
 char sdt_new[15];
+
+unsigned long timer_gio=0;
+int thoigian_gio=0;
+long sotien;
+boolean da_kttk=false;
 
 byte guitinnhan=0;
 //  byte ip1[4];
@@ -176,12 +180,13 @@ void setup() {
   power_on();
   init_SIM900A();
   timeled = millis();
+  timer_gio=timeled;
           manap=WiFiConf.sta_manap;
           manap.trim();
           Serial.println(manap);
 }
 void loop() {
- 
+
   server.handleClient();
   switch (WiFi.status())
   {
@@ -248,6 +253,16 @@ void loop() {
   else if(digitalRead(IN2)==1){if (gui1==1){delay(50);if(digitalRead(IN2)==1){gui1=0;}}}
   if(digitalRead(IN3)==0){if (gui2==0){delay(50);if(digitalRead(IN3)==0){Serial.println("IN3");gui2=1;digitalWrite(5,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);goidt();}}}
   else if(digitalRead(IN3)==1){if (gui2==1){delay(50);if(digitalRead(IN3)==1){gui2=0;}}} 
+  if ( (unsigned long) (millis() - timer_gio) > 1000 ){
+                          thoigian_gio++;
+                          if (timer_gio > 3200){ timer_gio=0;guitinnhan=3;}
+                          if (da_kttk){ if (sotien<15000){ send_SMS("Chu y : So TK con thap hon 15000d");da_kttk=false;}};
+                          timer_gio = millis();
+  }
+  
+  
+  
+
 }
 
 //******************************************************************************************************
