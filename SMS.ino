@@ -73,6 +73,12 @@ void receive_uart() {
                         SetVariHC(bienvari,"0");
                         send_SMS("SDT 0"+ String(phone_number) +" OFF ARLAM");
                   }
+                 else if (strstr(response,"OK") != NULL) {                 
+                        String bienvari=String(WiFiConf.sta_global1);
+                        bienvari.trim();
+                        SetVariHC(bienvari,"OK");
+                        send_SMS("SDT 0"+ String(phone_number) +" Da Kiem Tra : OK");
+                  }
                  /* else if (strstr(response,"Tat") != NULL) {                 
                         String bienvari=String(WiFiConf.sta_global2);
                         bienvari.trim();
@@ -111,7 +117,7 @@ void receive_uart() {
            i=0;           
            previous = millis(); 
            answer = 0; 
-           do {
+           do {delay(1);
                 if(Serial.available() != 0){
                     response[x] = Serial.read();                             
                     if (i>3){x++;}
@@ -207,7 +213,7 @@ void init_SIM900A() {
 int sendAT(char* ATcommand, char* expected_answer, unsigned int timeout) {
   memset(buffer, '\0', buffer_size);      // Initialize the string
   memset(response, '\0', buffer_size);
-   delay(100);
+   delay(1);
    answer=0;
   Serial.println(ATcommand);
   x = 0;
@@ -216,20 +222,20 @@ int sendAT(char* ATcommand, char* expected_answer, unsigned int timeout) {
     if(Serial.available() != 0){    
       response[x] = Serial.read();
       x++;
-      if (strstr(response, expected_answer) != NULL){answer = 1;}
+      if (strstr(response, expected_answer) != NULL){return 1;}
     } 
+    delay(1);
   }
-  while((answer == 0) && ((millis() - previous) < timeout)); 
-  //yield();
-  return answer;
+  while((millis() - previous) < timeout); 
+  return 0;
 }
 void delay_nhan(unsigned int timeout){
   previous = millis();
   do {
     server.handleClient();
+    delay(1);
   }
   while((millis() - previous) < timeout); 
-  //yield();
 }
 //******************************************************************************************************
 void power_on(){ 
@@ -239,7 +245,6 @@ void power_on(){
         while(answer==0) {answer = sendAT("AT", "OK", 200); delay(20);bien=bien+1; if(bien>10){answer=1;}} 
        }
        sendAT("AT+CFUN=1","OK",1000);
-      // yield();
      }
      //////////////////////////////////////////////
      /////////Hàm gửi tin nhắn  ///////////////////
@@ -298,7 +303,6 @@ void send_SMS1(String noidungsms) {
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT3[0]!='x'){
-      // delay(1000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT3);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }
@@ -306,7 +310,6 @@ void send_SMS1(String noidungsms) {
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT4[0]!='x'){
-     //delay(1000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT4);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }

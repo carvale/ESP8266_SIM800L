@@ -6,9 +6,9 @@ const char PROGMEM b64_alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "0123456789+/";
 
 /* 'Private' declarations */
-inline void a3_to_a4(unsigned char * a4, unsigned char * a3);
-inline void a4_to_a3(unsigned char * a3, unsigned char * a4);
-inline unsigned char b64_lookup(char c);
+void a3_to_a4(unsigned char * a4, unsigned char * a3);
+void a4_to_a3(unsigned char * a3, unsigned char * a4);
+unsigned char b64_lookup(char c);
 
 int base64_encode(char *output, char *input, int inputLen) {
   int j = 0;
@@ -107,24 +107,23 @@ int base64_dec_len(char * input, int inputLen) {
   for(i = inputLen - 1; input[i] == '='; i--) {
     numEq++;
   }
-
   return ((6 * inputLen) / 8) - numEq;
 }
 
-inline void a3_to_a4(unsigned char * a4, unsigned char * a3) {
+void a3_to_a4(unsigned char * a4, unsigned char * a3) {
   a4[0] = (a3[0] & 0xfc) >> 2;
   a4[1] = ((a3[0] & 0x03) << 4) + ((a3[1] & 0xf0) >> 4);
   a4[2] = ((a3[1] & 0x0f) << 2) + ((a3[2] & 0xc0) >> 6);
   a4[3] = (a3[2] & 0x3f);
 }
 
-inline void a4_to_a3(unsigned char * a3, unsigned char * a4) {
+ void a4_to_a3(unsigned char * a3, unsigned char * a4) {
   a3[0] = (a4[0] << 2) + ((a4[1] & 0x30) >> 4);
   a3[1] = ((a4[1] & 0xf) << 4) + ((a4[2] & 0x3c) >> 2);
   a3[2] = ((a4[2] & 0x3) << 6) + a4[3];
 }
 
-inline unsigned char b64_lookup(char c) {
+unsigned char b64_lookup(char c) {
   if(c >='A' && c <='Z') return c - 'A';
   if(c >='a' && c <='z') return c - 71;
   if(c >='0' && c <='9') return c + 4;
@@ -360,6 +359,7 @@ server.on("/sdt_conf", []() {
       content += F("<body></html>");
 
     server.send(200, "text/html", content);
+    delay(500);
     ESP.reset();
   });
   server.on("/tinnhan", []() {
@@ -574,9 +574,9 @@ server.on("/mang_didong", []() {
     content += F("><br /><br />");
     content += F("<input type='submit' value='OK' onclick='return confirm(\"Bạn có muốn thay đổi cài đặt ?\");'></form>");
     content += F(" </p>");
-    content += F("<li><p>Thông tin");
-    content += F("<li><p>Mã nhắn tin để kiểm tra tài khoản : KTTK");
-    content += F("<li><p>Mã nhắn tin để nạp tiền : NAP:mã thẻ.");
+    content += F("<li>Thông tin");
+    content += F("<li>Mã nhắn tin để kiểm tra tài khoản : KTTK");
+    content += F("<li>Mã nhắn tin để nạp tiền : NAP:mã thẻ.");
      }
      else
      {
@@ -596,8 +596,8 @@ server.on("/mang_didong", []() {
     
     content += F("<input type='submit' value='OK' onclick='return confirm(\"Change Setting ?\");'></form>");
 
-    content += F("<li><p>Ex: Recharge code:55555555555 . USSD: *100* ->*100*55555555555#");
-    content += F("<li><p>USSD for Balance Check : *101#,*102#...");
+    content += F("<li>Ex: Recharge code:55555555555 . USSD: *100* ->*100*55555555555#");
+    content += F("<li>USSD for Balance Check : *101#,*102#...");
     }
      content += F("</body></html>");
     server.send(200, F("text/html"), content);
@@ -657,9 +657,9 @@ server.on("/mang_didong", []() {
     content += content1;
     content += F("<input type='submit' value='OK' onclick='return confirm(\"Bạn có muốn thay đổi cài đặt ?\");'></form>");
     content += F(" </p>");
-    content += F("<li><p>Thông tin HC2");
-    content += F("<li><p>Password định dạng User:password#   VD: admin:admin# ");
-    //content += F("<li><p>Voi Phien ban V4.101 USer la email nene cuoi dau  can them vao dau '.' nhu 'Kythuat@kimsontien.com:Pass123@.'");
+    content += F("<li>Thông tin HC2");
+    content += F("<li>Password định dạng User:password#   VD: admin:admin# ");
+    //content += F("<li>Voi Phien ban V4.101 USer la email nene cuoi dau  can them vao dau '.' nhu 'Kythuat@kimsontien.com:Pass123@.'");
      }
      else
      {
@@ -672,8 +672,8 @@ server.on("/mang_didong", []() {
     content += F("</p><form method='get' action='getHC'>");
     content += F("<input type='submit' value='Check'></form>");
     content += F(" </p>");
-    content += F("<li><p>Information HC2");
-    content += F("<li><p>Format User:password#  Ex: admin:admin123#");
+    content += F("<li>Information HC2");
+    content += F("<li>Format User:password#  Ex: admin:admin123#");
     }
      content += F("</body></html>");
     server.send(200, F("text/html"), content);
@@ -808,7 +808,7 @@ void setupWeb(void) {
        content +=F("<legend style = \"color: red; font-size : 150%;align: Center\">Cài Đặt</legend>");
       content +=F("<fieldset>");
               content +=F("<legend><a href='/wifi_conf'>Cài đặt Wifi</a></legend>");
-              content += F("<li><p>Wifi : ");
+              content += F("<li>Wifi : ");
               if (statusmang==0) {        
                   content += F("NOT Connected");
                   content += F("</br><li>IP: 192.168.4.1:4999 ( ");
@@ -826,34 +826,34 @@ void setupWeb(void) {
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/hc2_conf'>Cài Đặt HC2</a></legend>");
-              content +=F("<li><p>Phần này mục đích điền các thông số của HC2 và các biến global nhằm cho việc truyền dữ liệu lên HC2");
-              content +=F("<li><p>Password HC2 định dạng là admin:password#");
-              content +=F("<li><p>Trạng Thái:");
+              content +=F("<li>Phần này mục đích điền các thông số của HC2 và các biến global nhằm cho việc truyền dữ liệu lên HC2");
+              content +=F("<li>Password HC2 định dạng là admin:password#");
+              content +=F("<li>Trạng Thái:");
               content +=SerialHC2;
-              content +=F("<li><p>HC2 response :");
+              content +=F("<li>HC2 response :");
               content +=noidung;
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/sdt_conf'>Cài Đặt SDT</a></legend>");
-              content +=F("<li><p>Phần này cài SDT lưu lại cho việc nhắn tin và gọi điện");
-              content +=F("<li><p>Phone Number 1:");
+              content +=F("<li>Phần này cài SDT lưu lại cho việc nhắn tin và gọi điện");
+              content +=F("<li>Phone Number 1:");
               content +=String(WiFiConf.sta_SDT1);
-              content +=F("<li><p>Phone Number 2:");
+              content +=F("<li>Phone Number 2:");
               content +=String(WiFiConf.sta_SDT2);
-              content +=F("<li><p>Phone Number 3:");
+              content +=F("<li>Phone Number 3:");
               content +=String(WiFiConf.sta_SDT3);
-             content +=F("<li><p>Phone Number 4:");
+             content +=F("<li>Phone Number 4:");
               content +=String(WiFiConf.sta_SDT4);  
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/mang_didong'>Cài mạng di động</a></legend>");
-              content +=F("<li><p>Mô tả: Điền các thông tin để kiểm tra tài khoảng và nạp tiền điện thoại");
+              content +=F("<li>Mô tả: Điền các thông tin để kiểm tra tài khoảng và nạp tiền điện thoại");
               content += String(WiFiConf.sta_manap);
              // content += F(" ><br /><br />");
 
-            content +=F("<li><p>USSD for Balance Check : ");
+            content +=F("<li>USSD for Balance Check : ");
             content += String(WiFiConf.sta_makttk) ;
-            content +=F("<li><p>USSD response : ");
+            content +=F("<li>USSD response : ");
             content += noidungkiemtratk ;
     content +=F("</fieldset>");
     content +=F("</fieldset>");
@@ -861,25 +861,25 @@ void setupWeb(void) {
     content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Test Function</legend>");
       content +=F("<fieldset>");
               content +=F("<legend><a href='/tinnhan'>Tin Nhắn</a></legend>");
-              content +=F("<li><p>Mô tả: gởi tin nhắn bằng tay.");
-              content +=F("<li><p>Dùng để kiểm tra chức năng nhắn tin.");
+              content +=F("<li>Mô tả: gởi tin nhắn bằng tay.");
+              content +=F("<li>Dùng để kiểm tra chức năng nhắn tin.");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/cuocgoi'>Cuộc Gọi</a></legend>");
-              content +=F("<li><p>Mô tả: gọi điện bằng tay.");
-              content +=F("<li><p>Dùng để kiểm tra chức năng gọi điện.");
+              content +=F("<li>Mô tả: gọi điện bằng tay.");
+              content +=F("<li>Dùng để kiểm tra chức năng gọi điện.");
     content +=F("</fieldset>");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
     content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Other Function</legend>");
       content +=F("<fieldset>");
               content +=F("<legend><a href='/module_id'>Cài tên Wifi</a></legend>");
-              content +=F("<li><p>Không cài đặt");
+              content +=F("<li>Không cài đặt");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/firmware'>Update Chương Trình</a></legend>");
-              content +=F("<li><p>Update firmware mới nhất cho HC2");
-              content +=F("<li><p>Status : V2.3 - 9/03/2017 - HC2");
+              content +=F("<li>Update firmware mới nhất cho HC2");
+              content +=F("<li>Status : V2.3 - 9/03/2017 - HC2");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/Reboot'>Khởi động lại</a></legend>");
@@ -891,16 +891,16 @@ void setupWeb(void) {
     content +=F("</fieldset>");
     content +=F("<fieldset>");
     content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Thông tin</legend>");
-    content += F("<li><p>@ Bản quyền sản phẩm thuộc mHome - Giải pháp nhà thông minh");
-    content += F("<li><p>Cty TNHH Kim Sơn Tiến");
-    content += F("<li><p>Phòng R&D");
+    content += F("<li>@ Bản quyền sản phẩm thuộc mHome - Giải pháp nhà thông minh");
+    content += F("<li>Cty TNHH Kim Sơn Tiến");
+    content += F("<li>Phòng R&D");
     }
     else
     {    content +=F("<legend style = \"color: red; font-size : 150%;align: Center\">Configuration</legend>");
       content +=F("<fieldset>");
      content +=F("<legend><a href='/wifi_conf'>Wifi setting</a></legend>");
               if (statusmang==0){ 
-                  content += F("<li><p>Wifi : ");
+                  content += F("<li>Wifi : ");
                   content += F("Not Connected");
                   content += F("</br><li>GSM IP: 192.168.4.1:4999 ");
                   content += F(" ( ");
@@ -908,7 +908,7 @@ void setupWeb(void) {
                   content += F(" )</p>");
               }
               else{
-                  content += F("<li><p>Connected to : ");
+                  content += F("<li>Connected to : ");
                   content += WiFiConf.sta_ssid;
                   content += F("</br><li>GSM IP: ");
                   content += ipStr;
@@ -919,34 +919,34 @@ void setupWeb(void) {
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend ><a href='/hc2_conf'>HC2 Setting</a></legend>");
-              content +=F("<li><p>Description:This section is for setting communication between HC2 and GSM controller");
-              content +=F("<li><p>Status : ");
+              content +=F("<li>Description:This section is for setting communication between HC2 and GSM controller");
+              content +=F("<li>Status : ");
               content +=SerialHC2;
-              content +=F("<li><p>HC2 response :");
+              content +=F("<li>HC2 response :");
               content +=noidung;
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/sdt_conf'>Phone Number</a></legend>");
-              content +=F("<li><p>Phone Number 1:");
+              content +=F("<li>Phone Number 1:");
               content +=String(WiFiConf.sta_SDT1);
-              content +=F("<li><p>Phone Number 2:");
+              content +=F("<li>Phone Number 2:");
               content +=String(WiFiConf.sta_SDT2);
-              content +=F("<li><p>Phone Number 3:");
+              content +=F("<li>Phone Number 3:");
               content +=String(WiFiConf.sta_SDT3);
-             content +=F("<li><p>Phone Number 4:");
+             content +=F("<li>Phone Number 4:");
               content +=String(WiFiConf.sta_SDT4);  
    
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/mang_didong'>Cellular network settings</a></legend>");
-              //content +=F("<li><p>Description:");
-                  content += F("<li><p>USSD for Recharge code :");
+              //content +=F("<li>Description:");
+                  content += F("<li>USSD for Recharge code :");
               content += String(WiFiConf.sta_manap);
              // content += F(" ><br /><br />");
 
-            content +=F("<li><p>USSD for Balance Check : ");
+            content +=F("<li>USSD for Balance Check : ");
             content += String(WiFiConf.sta_makttk) ;
-            content +=F("<li><p>USSD response : ");
+            content +=F("<li>USSD response : ");
             content += noidungkiemtratk ;
     content +=F("</fieldset>");
     content +=F("</fieldset>");
@@ -954,13 +954,13 @@ void setupWeb(void) {
     content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Test Function</legend>");
       content +=F("<fieldset>");
               content +=F("<legend><a href='/tinnhan'>Test SMS function.</a></legend>");
-              content +=F("<li><p>Description: Manually sending SMS to cell phone.");
-              content +=F("<li><p>Using to test sending SMS function.");
+              content +=F("<li>Description: Manually sending SMS to cell phone.");
+              content +=F("<li>Using to test sending SMS function.");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/cuocgoi'>Test Calling function.</a></legend>");
-              content +=F("<li><p>Description: Manually calling  to cell phone.");
-              content +=F("<li><p>Using to test calling  function.");
+              content +=F("<li>Description: Manually calling  to cell phone.");
+              content +=F("<li>Using to test calling  function.");
     
     content +=F("</fieldset>");
      content +=F("</fieldset>");
@@ -968,24 +968,24 @@ void setupWeb(void) {
     content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Other Function</legend>");
       content +=F("<fieldset>");
               content +=F("<legend><a href='/firmware'>Firmware Update</a></legend>");
-              content +=F("<li><p>Description: This section is for update firmware of GSM controller");
-              content +=F("<li><p>Status : V2.3 - 9/03/2017 - HC2");
+              content +=F("<li>Description: This section is for update firmware of GSM controller");
+              content +=F("<li>Status : V2.3 - 9/03/2017 - HC2");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/Reboot'>Reboot GSM Controller</a></legend>");
-              content +=F("<li><p>Description: Only reboot GSM module, parameter is not changed.");
+              content +=F("<li>Description: Only reboot GSM module, parameter is not changed.");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
             content +=F("<legend><a href='/Reset1'>Factory Reset</a></legend>");
-             content +=F("<li><p>Description: Clear all parameters and restore to original default settings");
+             content +=F("<li>Description: Clear all parameters and restore to original default settings");
     content +=F("</fieldset>");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
     content +=F("<legend style =\"color: red;  font-size : 150%;align: Center\">Information</legend>");
-    content += F("<li><p>Copyright © Kim Son Tien Co.Ltd - mHome");
-    content += F("<li><p>www.nhathongminhmhome.com");
-    content += F("<li><p>Designed by mHome - R&D Department");
-    content += F("<li><p>Made in VietNam");
+    content += F("<li>Copyright © Kim Son Tien Co.Ltd - mHome");
+    content += F("<li>www.nhathongminhmhome.com");
+    content += F("<li>Designed by mHome - R&D Department");
+    content += F("<li>Made in VietNam");
     
     }
     content +=F("</fieldset>");
@@ -1006,6 +1006,20 @@ void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) 
         str++;                                // Point to next character after separator
     }
 }
+void parseBytes1(const char* str, char sep, int address, int maxBytes, int base) {
+  for (int i = 0; i < maxBytes; i++) {
+    if (address == 1) ip10[i] = strtoul(str, NULL, base);  // Convert byte
+    else if (address == 2) gateway10[i] = strtoul(str, NULL, base);  // Convert byte
+    else if (address == 3) subnet10[i] = strtoul(str, NULL, base);  // Convert byte
+   // Serial.println(bytes[i]);
+    str = strchr(str, sep);               // Find next separator
+    if (str == NULL || *str == '\0') {
+      break;                            // No more separators, exit
+    }
+    str++;                                // Point to next character after separator
+  }
+}
+
 ///////////////////////////////////////////
 //Set Varuable toi HC2 ////////////////////
 //////////////////////////////////////////
