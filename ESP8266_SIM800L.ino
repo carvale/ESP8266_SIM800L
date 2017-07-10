@@ -1,11 +1,17 @@
-
+#include "Khaibao.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
 #include <ESP8266HTTPUpdateServer.h>
 
-#define status_led  0
+#define status_led  0  // vercu la 4
+#define IN1  13  // Ver cu  la 16
+#define IN2  14
+#define IN3  12
+#define OUT1  15  // Ver cu  la 16
+#define OUT2  2
+#define OUT3  4
 
 IPAddress ip10;
 IPAddress gateway10;
@@ -118,14 +124,18 @@ void kttk(String nd);
 
 void setup() {
   Serial.begin(115200);
-  pinMode(12, INPUT);
-  pinMode(14, INPUT);
-  pinMode(16, INPUT);
-  pinMode(13, INPUT);
-  //pinMode(2, OUTPUT);
-  pinMode(5, OUTPUT);
+  pinMode(IN3, INPUT);
+  pinMode(IN2, INPUT);
+  pinMode(IN1, INPUT);
   pinMode(status_led, OUTPUT);
+  pinMode(OUT1, OUTPUT);
+  //pinMode(OUT2, OUTPUT);
+  //pinMode(OUT3, OUTPUT);
+  
   digitalWrite(status_led,LOW);
+  digitalWrite(OUT1,LOW);
+  //digitalWrite(OUT2,LOW);
+  //digitalWrite(OUT3,LOW);
   digitalWrite(5,LOW);
   digitalWrite(status_led,HIGH);
   delay(1000);
@@ -146,12 +156,7 @@ void setup() {
     saveWiFiConf();
   }
   scanWiFi();
-  WiFi.mode(WIFI_AP_STA);
-  WiFi.begin(WiFiConf.sta_ssid, WiFiConf.sta_pwd);
-  parseBytes1(WiFiConf.sta_ip, '.', 1, 4, 10);
-  parseBytes1(WiFiConf.sta_gateway, '.', 2, 4, 10);
-  parseBytes1(WiFiConf.sta_subnet, '.', 3, 4, 10);
-  WiFi.config(ip10,gateway10,subnet10,DNS);
+  connect_wifi();
   statusmang=waitConnected();
   if (WiFi.status() == WL_CONNECTED) {
     digitalWrite(status_led,HIGH);
@@ -178,7 +183,7 @@ void setup() {
 void loop() {
  
   server.handleClient();
-    switch (WiFi.status())
+  switch (WiFi.status())
   {
     case WL_CONNECTED:
               if (statusmang==0){digitalWrite(status_led, HIGH); 
@@ -189,11 +194,7 @@ void loop() {
     default:
           if (statusmang!=0){ statusmang=0;timeled = millis();} 
           if (cho>=50){
-            WiFi.begin(WiFiConf.sta_ssid, WiFiConf.sta_pwd);
-            parseBytes1(WiFiConf.sta_ip, '.', 1, 4, 10);
-            parseBytes1(WiFiConf.sta_gateway, '.', 2, 4, 10);
-            parseBytes1(WiFiConf.sta_subnet, '.', 3, 4, 10);
-            WiFi.config(ip10,gateway10,subnet10,DNS);
+            connect_wifi();
             cho=0;
           }
           else
@@ -207,38 +208,6 @@ void loop() {
           } 
               break;
   }
- /*  if (WiFi.status() == WL_CONNECTED) {
-       if (statusmang==0){digitalWrite(status_led, HIGH); statusmang=1;cho=0;WiFi.softAP("GSM mHome","88888888",1,1);}                            
-    }
-    else {
-      if (statusmang!=0){ statusmang=0;timeled = millis();}
-         // server.handleClient();  
-          if (cho>=50){
-          WiFi.begin(WiFiConf.sta_ssid, WiFiConf.sta_pwd);
-         // parseBytes(WiFiConf.sta_ip, '.', ip1, 4, 10);
-        //  parseBytes(WiFiConf.sta_gateway, '.', gateway, 4, 10);
-        //  parseBytes(WiFiConf.sta_subnet, '.', subnet, 4, 10);
-            parseBytes1(WiFiConf.sta_ip, '.', 1, 4, 10);
-  parseBytes1(WiFiConf.sta_gateway, '.', 2, 4, 10);
-  parseBytes1(WiFiConf.sta_subnet, '.', 3, 4, 10);
-  WiFi.config(ip10,gateway10,subnet10,DNS);
-        //  WiFi.config(ip1, gateway, subnet);
-          cho=0;
-          }
-          else
-          {
-                  if ( (unsigned long) (millis() - timeled) > 500 )
-                      {
-                          if ( digitalRead(4) == LOW )
-                          {digitalWrite(status_led, HIGH);} 
-                          else {
-                                  digitalWrite(status_led, LOW );
-                                  }
-                                  timeled = millis();
-                                  cho++;
-                  }
-          }      
-    }*/
   receive_uart();
   switch (guitinnhan){
     case 1:
@@ -273,19 +242,12 @@ void loop() {
     default:
           break;
   }
-  /*if (guitinnhan==1){guitinnhan=0;send_SMS(noidung);}
-  else if (guitinnhan==2){guitinnhan=0;goidt();}
-  else if (guitinnhan==3){guitinnhan=0;kttkcusd();}
-  else if (guitinnhan==5){guitinnhan=0;String manap=WiFiConf.sta_manap;manap.trim();manap=manap+manapthe;manap=manap+"#";kttk(manap);}
-  else if (guitinnhan==6){guitinnhan=3;}
-  else if (guitinnhan==7){guitinnhan=0;send_SMS1(noidung);}
-  else if (guitinnhan==8){guitinnhan=0;goidt2();}*/
-  if(digitalRead(13)==0){if (gui==0){delay(50);if(digitalRead(16)==0){Serial.println("IN1");gui=1;digitalWrite(5,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);goidt();}}}
-  else if(digitalRead(13)==1){if (gui==1){delay(50);if(digitalRead(16)==1){gui=0;}}}
-  if(digitalRead(14)==0){if (gui1==0){delay(50);if(digitalRead(14)==0){Serial.println("IN2");gui1=1;digitalWrite(5,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);goidt();}}}
-  else if(digitalRead(14)==1){if (gui1==1){delay(50);if(digitalRead(14)==1){gui1=0;}}}
-  if(digitalRead(12)==0){if (gui2==0){delay(50);if(digitalRead(12)==0){Serial.println("IN3");gui2=1;digitalWrite(5,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);goidt();}}}
-  else if(digitalRead(12)==1){if (gui2==1){delay(50);if(digitalRead(12)==1){gui2=0;}}}    //String(WiFiConf.sta_noidung3)+
+  if(digitalRead(IN1)==0){if (gui==0){delay(50);if(digitalRead(IN1)==0){Serial.println("IN1");gui=1;digitalWrite(5,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);goidt();}}}
+  else if(digitalRead(IN1)==1){if (gui==1){delay(50);if(digitalRead(IN1)==1){gui=0;}}}
+  if(digitalRead(IN2)==0){if (gui1==0){delay(50);if(digitalRead(IN2)==0){Serial.println("IN2");gui1=1;digitalWrite(5,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);goidt();}}}
+  else if(digitalRead(IN2)==1){if (gui1==1){delay(50);if(digitalRead(IN2)==1){gui1=0;}}}
+  if(digitalRead(IN3)==0){if (gui2==0){delay(50);if(digitalRead(IN3)==0){Serial.println("IN3");gui2=1;digitalWrite(5,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);goidt();}}}
+  else if(digitalRead(IN3)==1){if (gui2==1){delay(50);if(digitalRead(IN3)==1){gui2=0;}}} 
 }
 
 //******************************************************************************************************
