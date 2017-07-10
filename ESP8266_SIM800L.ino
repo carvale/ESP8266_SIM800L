@@ -45,7 +45,7 @@ char uart_tam='\0';
 //char c1=0;
 char phone_number[13];
 
-String noidung;
+String noidung="123456789012345678901234567890123456789012345678901234567890123456789012345678904444444";
 String manapthe;
 String noidungkiemtratk;
 String network_html;

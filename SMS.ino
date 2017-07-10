@@ -222,12 +222,12 @@ int sendAT(char* ATcommand, char* expected_answer, unsigned int timeout) {
     if(Serial.available() != 0){    
       response[x] = Serial.read();
       x++;
-      if (strstr(response, expected_answer) != NULL){return 1;}
+      if (strstr(response, expected_answer) != NULL){answer=1;return answer;}
     } 
     delay(1);
   }
-  while((millis() - previous) < timeout); 
-  return 0;
+  while((answer==0)&& (millis() - previous) < timeout);
+  return answer;
 }
 void delay_nhan(unsigned int timeout){
   previous = millis();
@@ -256,30 +256,34 @@ void send_SMS(String noidungsms) {
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT1);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);}
+     else Serial.write(26);
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT2[0]!='x'){
-     // delay(1000);
+     delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT2);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);}bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);}
+     else Serial.write(26);
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT3[0]!='x'){
-      // delay(1000);
+      delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT3);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);}bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }
+     else Serial.write(26);
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT4[0]!='x'){
-     //delay(1000);
+     delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT4);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }
+     else Serial.write(26);
     }
     statusnaptk=0;
     yield();
@@ -288,40 +292,48 @@ void send_SMS1(String noidungsms) {
   int bien=0;
     answer=0;
     if (WiFiConf.sta_SDT1[0]!='x'){
+      
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT1);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);}bien=bien+1;delay_nhan(50); if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);}
+     else Serial.write(26);
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT2[0]!='x'){
-     // delay(1000);
+      delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT2);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);}bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);}
+     else Serial.write(26);
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT3[0]!='x'){
+      delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT3);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }
+     else Serial.write(26);
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT4[0]!='x'){
+      delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",WiFiConf.sta_SDT4);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }
+     else Serial.write(26);
     }
     
     bien=0;
     answer=0;
     if (sdt_new[0]=='0'){
-     //delay(1000);
+     delay(2000);
      sprintf(aux_string,"AT+CMGS=\"%s\"",sdt_new);
      do { if (bien%100==0){answer = sendAT(aux_string,">",1000);} bien=bien+1;delay_nhan(50);if(bien>200){answer=2;}} while(answer==0); 
      if(answer==1){ Serial.print(noidungsms);Serial.write(26);  }
+     else Serial.write(26);
     }
     statusnaptk=0;
     yield();
@@ -341,7 +353,7 @@ void goidt() {
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT2[0]!='x'){
-      delay_nhan(500);
+      delay_nhan(1000);
      sprintf(aux_string,"ATD%s;",WiFiConf.sta_SDT2);
      do { if (bien%2500==0){answer = sendAT(aux_string,"OK",500);}bien=bien+1;delay_nhan(10);if(bien>5000){answer=1;break;}} while(answer==0); 
     }
@@ -349,7 +361,7 @@ void goidt() {
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT3[0]!='x'){
-      delay_nhan(500);
+      delay_nhan(1000);
      sprintf(aux_string,"ATD%s;",WiFiConf.sta_SDT3);
      do { if (bien%2500==0){answer = sendAT(aux_string,"OK",500);}bien=bien+1;delay_nhan(10);if(bien>5000){answer=1;break;}} while(answer==0); 
     }
@@ -357,7 +369,7 @@ void goidt() {
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT4[0]!='x'){
-      delay_nhan(500);
+      delay_nhan(1000);
      sprintf(aux_string,"ATD%s;",WiFiConf.sta_SDT4);
      do { if (bien%2500==0){answer = sendAT(aux_string,"OK",500);} bien=bien+1;delay_nhan(10);if(bien>5000){answer=1;break;}} while(answer==0); 
     }
@@ -375,14 +387,14 @@ void goidt2() {
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT2[0]!='x'){
-      delay_nhan(100);
+      delay_nhan(1000);
      sprintf(aux_string,"ATD%s;",WiFiConf.sta_SDT2);
      do { if (bien%250==0){answer = sendAT(aux_string,"OK",500);}bien=bien+1;delay_nhan(50);if(bien>1000){answer=1;break;}} while(answer==0); 
     }
     bien=0;
     answer=0;
     if (WiFiConf.sta_SDT3[0]!='x'){
-      delay_nhan(100);
+      delay_nhan(1000);
      sprintf(aux_string,"ATD%s;",WiFiConf.sta_SDT3);
      do { if (bien%200==0){answer = sendAT(aux_string,"OK",500);}bien=bien+1;delay_nhan(50);if(bien>1000){answer=1;break;}} while(answer==0); 
     }
