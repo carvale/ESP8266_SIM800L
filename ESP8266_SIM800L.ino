@@ -254,15 +254,12 @@ void loop() {
   if(digitalRead(IN3)==0){if (gui2==0){delay(50);if(digitalRead(IN3)==0){Serial.println("IN3");gui2=1;digitalWrite(5,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);goidt();}}}
   else if(digitalRead(IN3)==1){if (gui2==1){delay(50);if(digitalRead(IN3)==1){gui2=0;}}} 
   if ( (unsigned long) (millis() - timer_gio) > 1000 ){
-                          thoigian_gio++;
-                          if (timer_gio > 3200){ timer_gio=0;guitinnhan=3;}
-                          if (da_kttk){ if (sotien<15000){ send_SMS("Chu y : So TK con thap hon 15000d");da_kttk=false;}};
                           timer_gio = millis();
+                          thoigian_gio++;
+                          if (thoigian_gio > 3200){ timer_gio=0;guitinnhan=3;}
+                          if (da_kttk){ if (sotien<25000){ send_SMS("Chu y : So TK con thap hon 15000d. De nap soan cu phap NAP:mathe. gui den sdt nay");da_kttk=false;}};
+                          
   }
-  
-  
-  
-
 }
 
 //******************************************************************************************************
