@@ -5,8 +5,8 @@
 #include <EEPROM.h>
 #include <ESP8266HTTPUpdateServer.h>
 
-#define status_led  0  // vercu la 4
-#define IN1  13  // Ver cu  la 16
+#define status_led  0  // vercu la 4 - 0
+#define IN1  13  // Ver cu  la 16 - 13
 #define IN2  14
 #define IN3  12
 #define OUT1  15  // Ver cu  la 16
@@ -183,7 +183,7 @@ void setup() {
   timer_gio=timeled;
           manap=WiFiConf.sta_manap;
           manap.trim();
-          Serial.println(manap);
+  guitinnhan=3;        
 }
 void loop() {
 
@@ -211,7 +211,7 @@ void loop() {
                           cho++;
                   }
           } 
-              break;
+          break;
   }
   receive_uart();
   switch (guitinnhan){
@@ -253,11 +253,12 @@ void loop() {
   else if(digitalRead(IN2)==1){if (gui1==1){delay(50);if(digitalRead(IN2)==1){gui1=0;}}}
   if(digitalRead(IN3)==0){if (gui2==0){delay(50);if(digitalRead(IN3)==0){Serial.println("IN3");gui2=1;digitalWrite(5,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);goidt();}}}
   else if(digitalRead(IN3)==1){if (gui2==1){delay(50);if(digitalRead(IN3)==1){gui2=0;}}} 
-  if ( (unsigned long) (millis() - timer_gio) > 1000 ){
+  if ( (unsigned long) (millis() - timer_gio) > 10000 ){  
                           timer_gio = millis();
                           thoigian_gio++;
-                          if (thoigian_gio > 3200){ timer_gio=0;guitinnhan=3;}
-                          if (da_kttk){ if (sotien<25000){ send_SMS("Chu y : So TK con thap hon 15000d. De nap soan cu phap NAP:mathe. gui den sdt nay");da_kttk=false;}};
+                          if (thoigian_gio > 2160){ thoigian_gio=0;guitinnhan=3;}
+                          Serial.println("AT");
+                          if (da_kttk){ if (sotien<15000){ noidung="Chu y : So TK con "; noidung = noidung + String(sotien);noidung = noidung + "d. De nap soan cu phap NAP:mathe. gui den sdt nay";guitinnhan=1;da_kttk=false;}};
                           
   }
 }

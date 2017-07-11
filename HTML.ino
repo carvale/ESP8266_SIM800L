@@ -393,11 +393,11 @@ server.on("/sdt_conf", []() {
 server.on("/set_ktk", []() {
     noidung = server.arg("text");
     guitinnhan=3;
-   String content = FPSTR(header); content += FPSTR(begin_title);
-   content += WiFiConf.module_id;
-    content += F(".local - set WiFi");
-    content += F("</title></head><body>");
-    content += F("<h1>ok</h1>");
+   String content = "" ; //FPSTR(header); content += FPSTR(begin_title);
+   //content += WiFiConf.module_id;
+    //content += F(".local - set WiFi");
+  //  content += F("</title></head><body>");
+    content += F("ok");
     server.send(200, "text/html", content);
   });
 server.on("/set_noidung", []() {
@@ -888,7 +888,7 @@ void setupWeb(void) {
     content +=F("<fieldset>");
               content +=F("<legend><a href='/firmware'>Update Chương Trình</a></legend>");
               content +=F("<li>Update firmware mới nhất cho HC2");
-              content +=F("<li>Status : V2.3 - 9/03/2017 - HC2");
+              content +=F("<li>Status : V2.4 - 11/07/2017 - Tự động cảnh báo khi tài khoảng thấp hơn 15000, Pin cho PCB mới");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/Reboot'>Khởi động lại</a></legend>");
@@ -978,7 +978,7 @@ void setupWeb(void) {
       content +=F("<fieldset>");
               content +=F("<legend><a href='/firmware'>Firmware Update</a></legend>");
               content +=F("<li>Description: This section is for update firmware of GSM controller");
-              content +=F("<li>Status : V2.3 - 9/03/2017 - HC2");
+              content +=F("<li>Status : V2.4 - 11/07/2017 -  Tự động cảnh báo khi tài khoảng thấp hơn 15000, Pin cho PCB mới");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/Reboot'>Reboot GSM Controller</a></legend>");
