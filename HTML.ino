@@ -176,31 +176,6 @@ void resetModuleId(void) {
 //////////////////////////////////
 void scanWiFi(void) {
   int founds = WiFi.scanNetworks();
-    //Serial.println();
-    //Serial.println(F("scan done"));
-    if (founds == 0) {
-    // Serial.println(F("no networks found"));
-    } else {
-    // Serial.print(founds);
-    // Serial.println(" networks found");
-     for (i = 0; i < founds; ++i) {
-    ///   Serial.print(i + 1);
-    //   Serial.print(": ");
-     //  Serial.print(WiFi.SSID(i));
-    //   Serial.print(" (");
-     //  Serial.print(WiFi.RSSI(i));
-     //  Serial.print(")");
-     //  Serial.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
-       delay(10);
-     }
-    }
-   // Serial.println();
-  if (founds == 0) {
-  } else {
-    for (i = 0; i < founds; ++i) {
-      delay(10);
-    }
-  }
   network_html = F("<ol>");
   for (i = 0; i < founds; ++i)
   {

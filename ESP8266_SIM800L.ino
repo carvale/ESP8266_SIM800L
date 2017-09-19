@@ -133,13 +133,13 @@ void setup() {
   pinMode(IN1, INPUT);
   pinMode(status_led, OUTPUT);
   pinMode(OUT1, OUTPUT);
-  //pinMode(OUT2, OUTPUT);
-  //pinMode(OUT3, OUTPUT);
+  pinMode(OUT2, OUTPUT);
+  pinMode(OUT3, OUTPUT);
   
   digitalWrite(status_led,LOW);
   digitalWrite(OUT1,LOW);
-  //digitalWrite(OUT2,LOW);
-  //digitalWrite(OUT3,LOW);
+  digitalWrite(OUT2,LOW);
+  digitalWrite(OUT3,LOW);
   digitalWrite(5,LOW);
   digitalWrite(status_led,HIGH);
   delay(1000);
@@ -247,18 +247,18 @@ void loop() {
     default:
           break;
   }
-  if(digitalRead(IN1)==0){if (gui==0){delay(50);if(digitalRead(IN1)==0){Serial.println("IN1");gui=1;digitalWrite(5,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);goidt();}}}
+  /*if(digitalRead(IN1)==0){if (gui==0){delay(50);if(digitalRead(IN1)==0){goidt();Serial.println("IN1");gui=1;digitalWrite(OUT3,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);}}}
   else if(digitalRead(IN1)==1){if (gui==1){delay(50);if(digitalRead(IN1)==1){gui=0;}}}
-  if(digitalRead(IN2)==0){if (gui1==0){delay(50);if(digitalRead(IN2)==0){Serial.println("IN2");gui1=1;digitalWrite(5,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);goidt();}}}
+  if(digitalRead(IN2)==0){if (gui1==0){delay(50);if(digitalRead(IN2)==0){goidt();Serial.println("IN2");gui1=1;digitalWrite(OUT3,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);}}}
   else if(digitalRead(IN2)==1){if (gui1==1){delay(50);if(digitalRead(IN2)==1){gui1=0;}}}
-  if(digitalRead(IN3)==0){if (gui2==0){delay(50);if(digitalRead(IN3)==0){Serial.println("IN3");gui2=1;digitalWrite(5,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);goidt();}}}
-  else if(digitalRead(IN3)==1){if (gui2==1){delay(50);if(digitalRead(IN3)==1){gui2=0;}}} 
+  if(digitalRead(IN3)==0){if (gui2==0){delay(50);if(digitalRead(IN3)==0){goidt();Serial.println("IN3");gui2=1;digitalWrite(OUT3,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);}}}
+  else if(digitalRead(IN3)==1){if (gui2==1){delay(50);if(digitalRead(IN3)==1){gui2=0;}}} */
   if ( (unsigned long) (millis() - timer_gio) > 10000 ){  
                           timer_gio = millis();
                           thoigian_gio++;
                           if (thoigian_gio > 2160){ thoigian_gio=0;guitinnhan=3;}
                           Serial.println("AT");
-                          if (da_kttk){ if (sotien<15000){ noidung="Chu y : So TK con "; noidung = noidung + String(sotien);noidung = noidung + "d. De nap soan cu phap NAP:mathe. gui den sdt nay";guitinnhan=1;da_kttk=false;}};
+                          if (da_kttk){ if (sotien<15000 && sotien>1000){da_kttk=false; noidung="Chu y : So TK con "; noidung = noidung + String(sotien);noidung = noidung + "d. De nap soan cu phap NAP:mathe. gui den sdt nay";guitinnhan=1;}};
                           
   }
 }

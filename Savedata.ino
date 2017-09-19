@@ -8,7 +8,7 @@ void connect_wifi(){
 }
 long tacksotustring(String kitu){
   Serial.println(kitu);
-  da_kttk= true;
+  
   char a[12];
   int len=kitu.length();
   char s[len];
@@ -17,7 +17,7 @@ long tacksotustring(String kitu){
     len=strlen(s);
     byte thoat=0;
     j=0;
-    for(int i=0;i<len;i++)
+    for(int i=8;i<len;i++)
     {
         if(s[i]>='0' && s[i]<='9')
         {
@@ -26,7 +26,7 @@ long tacksotustring(String kitu){
             thoat=1;
            }
         }
-        else if (thoat == 1)thoat=2;
+        else if (thoat == 1){thoat=2;da_kttk= true;};
     }
     a[j] = 0;
     long trave=atol(a);
