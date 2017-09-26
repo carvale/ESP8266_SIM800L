@@ -1,3 +1,5 @@
+byte dtmf_sim=10;
+
 const char space_html[] PROGMEM ="&nbsp;";
 const char _legend_html[] PROGMEM ="</a></legend>";
 const char legend_html[] PROGMEM ="<legend><a href=";

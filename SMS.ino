@@ -169,11 +169,62 @@ void receive_uart() {
             Serial.println(F("ATH"));
           }
       }
+   else if(strstr(buffer, "DTMF:") != NULL)    
+      { yield();
+        xbuff=0;
+          x=0;
+            memset(buffer, '\0', buffer_size);      // Initialize the string
+            memset(response, '\0', buffer_size); 
+          previous = millis();  
+          answer=0;
+          do {
+                if(Serial.available() != 0){
+                    response[x] = Serial.read();
+                    x++;
+                if (strstr(response, "\n") != NULL){answer = 1;}              
+            }          
+          }
+          while((answer == 0) && ((millis() - previous) < 1000)); 
+         if (strstr(response,"1") != NULL) {
+          dtmf_sim=1;
+         }
+         else if (strstr(response,"2") != NULL) {
+          dtmf_sim=2;
+         }
+                  else if (strstr(response,"3") != NULL) {
+                    dtmf_sim=3;
+         }
+                  else if (strstr(response,"4") != NULL) {
+                    dtmf_sim=4;
+         }
+                  else if (strstr(response,"5") != NULL) {
+                    dtmf_sim=5;
+         }
+                  else if (strstr(response,"6") != NULL) {
+                    dtmf_sim=6;
+         }
+                  else if (strstr(response,"7") != NULL) {
+                    dtmf_sim=7;
+         }
+                  else if (strstr(response,"8") != NULL) {
+                    dtmf_sim=8;
+         }
+                  else if (strstr(response,"9") != NULL) {
+                    dtmf_sim=9;
+         }
+                  else if (strstr(response,"0") != NULL) {
+                    dtmf_sim=0;
+         }
+         
+      }
    else if(strstr(buffer,"SMS Ready") != NULL){ guitinnhan=6;
                   memset(buffer, '\0', buffer_size);      // Initialize the string
                   memset(response, '\0', buffer_size); 
                   xbuff=0;
-      }
+  }
+  else if(strstr(buffer,"OK") != NULL){ 
+                  xbuff=0;
+  }
   else if (uart_tam=='+'){xbuff=0; }     
   }
 }
@@ -197,6 +248,8 @@ void init_SIM900A() {
   do { answer = sendAT("AT+CSAS", "OK",200);bien=bien+1; if(bien>5){answer=1;}} while(answer==0);
   bien=0;
   do { answer = sendAT("AT+CSQ", "OK",200);bien=bien+1; if(bien>5){answer=1;}} while(answer==0);
+  bien=0;
+  do { answer = sendAT("AT + DDET = 1,1000,0,0", "OK",200);bien=bien+1; if(bien>5){answer=1;}} while(answer==0);
   answer=0;
   yield();
   }

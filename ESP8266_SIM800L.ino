@@ -247,6 +247,38 @@ void loop() {
     default:
           break;
   }
+  switch (dtmf_sim){
+    case 0:
+          dtmf_sim=10;
+          break;
+    case 1:
+          dtmf_sim=10;
+          break;
+    case 2:
+          dtmf_sim=10;
+          break;
+    case 3:
+          dtmf_sim=10;
+          break;
+    case 4:
+          dtmf_sim=10;
+          break;
+    case 5:
+          dtmf_sim=10;
+          break;
+    case 6:
+          dtmf_sim=10;
+          break;
+    case 7:
+          dtmf_sim=10;
+          break;
+    case 8:
+          dtmf_sim=10;
+          break;
+    case 9:
+          dtmf_sim=10;
+          break;
+  }
   /*if(digitalRead(IN1)==0){if (gui==0){delay(50);if(digitalRead(IN1)==0){goidt();Serial.println("IN1");gui=1;digitalWrite(OUT3,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);}}}
   else if(digitalRead(IN1)==1){if (gui==1){delay(50);if(digitalRead(IN1)==1){gui=0;}}}
   if(digitalRead(IN2)==0){if (gui1==0){delay(50);if(digitalRead(IN2)==0){goidt();Serial.println("IN2");gui1=1;digitalWrite(OUT3,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);}}}
