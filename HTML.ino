@@ -133,6 +133,10 @@ unsigned char b64_lookup(char c) {
 }
 /////////////////////////////////////////////////////////////////////////
 void printWiFiConf(void) {
+  Serial.println(WiFiConf.sta_ssid);
+  Serial.println(WiFiConf.sta_ip);
+  Serial.println(WiFiConf.module_id);
+  //Serial.println(WiFiConf.sta_ssid);
  // Serial.println(WiFiConf.sta_ssid);
 }
 
@@ -364,6 +368,22 @@ server.on("/sdt_conf", []() {
     content += F("</body></html>");
     server.send(200, "text/html", content);
   });
+  ////////////////////////////
+  // OUT COntrol ////////////
+#ifdef OUT_CC
+  server.on("/OUT1", []() {
+    out=1;
+    server.send(200, "text/html", "ok");
+  });
+    server.on("/OUT2", []() {
+      out=2;
+    server.send(200, "text/html", "ok");
+  });
+    server.on("/OUT3", []() {
+      out=3;
+    server.send(200, "text/html", "ok");
+  });
+#endif
 ///////////////////////
 server.on("/set_ktk", []() {
     noidung = server.arg("text");
