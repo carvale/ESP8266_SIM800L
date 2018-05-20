@@ -16,7 +16,7 @@ ESP8266HTTPUpdateServer httpUpdater;
 
 void SetVariHC(String vari,String giatri);
 void getHC();
-void goidt();
+void goidt(byte khancap);
 void kttkcusd();
 void receive_uart();
 void init_SIM900A();
@@ -24,7 +24,7 @@ int sendAT(char* ATcommand, char* expected_answer, unsigned int timeout);
 void power_on();
 void send_SMS(String noidungsms="");
 void kttk(String nd);
-
+int limit_connect=0;
 void setup() {
   //wdt_disable();
 #ifdef OUT_CC || INT_SENS
@@ -105,12 +105,15 @@ void loop() {
               if (statusmang==0){digitalWrite(status_led, LOW); 
               statusmang=1;
               cho=0;
-              WiFi.softAPdisconnect(false);}     
+              limit_connect=0;
+              WiFi.softAPdisconnect(true);}     
               break;
     default:
-          if (statusmang!=0){ statusmang=0;timeled = millis();} 
+          if (statusmang!=0){ statusmang=0;timeled = millis();WiFi.softAPdisconnect(false);} 
+          if (limit_connect > 3){ESP.reset();}
           if (cho>=50){
             connect_wifi();
+            limit_connect++;
             cho=0;
           }
           else
@@ -134,7 +137,7 @@ void loop() {
           break;
     case 2:
           guitinnhan=0;
-          goidt();
+          goidt(0);
           break;
     case 3:
           guitinnhan=0;
@@ -155,12 +158,16 @@ void loop() {
           break;
     case 8:
           guitinnhan=0;
-          goidt2();
+          goidt(1);
           break;
     default:
           break;
   }
-  switch (dtmf_sim){
+  if (dtmf_sim != 10){
+    SetVariHC("SIM_DTMF",String(dtmf_sim));
+    dtmf_sim=10;
+  }
+ /* switch (dtmf_sim){
     case 0:
           SetVariHC("SIM_DTMF","0");
           dtmf_sim=10;
@@ -201,7 +208,7 @@ void loop() {
           SetVariHC("SIM_DTMF","9");
           dtmf_sim=10;
           break;
-  }
+  }*/
 #endif
 #ifdef OUT_CC
 switch (out){
@@ -238,11 +245,11 @@ switch (out){
 }
 #endif
 #ifdef INT_SENS
-  if(digitalRead(IN1)==0){if (gui[0]==0){delay(50);if(digitalRead(IN1)==0){gui[0]=1;goidt();}}} //;Serial.println("IN1");digitalWrite(OUT3,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);}}}
+  if(digitalRead(IN1)==0){if (gui[0]==0){delay(50);if(digitalRead(IN1)==0){gui[0]=1;goidt(0);}}} //;Serial.println("IN1");digitalWrite(OUT3,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);}}}
   else if(digitalRead(IN1)==1){if (gui[0]==1){delay(50);if(digitalRead(IN1)==1){gui[0]=0;}}}
-  if(digitalRead(IN2)==0){if (gui[1]==0){delay(50);if(digitalRead(IN2)==0){gui[1]=1;goidt();}}}//Serial.println("IN2");digitalWrite(OUT3,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);}}}
+  if(digitalRead(IN2)==0){if (gui[1]==0){delay(50);if(digitalRead(IN2)==0){gui[1]=1;goidt(0);}}}//Serial.println("IN2");digitalWrite(OUT3,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);}}}
   else if(digitalRead(IN2)==1){if (gui[1]==1){delay(50);if(digitalRead(IN2)==1){gui[1]=0;}}}
-  if(digitalRead(IN3)==0){if (gui[2]==0){delay(50);if(digitalRead(IN3)==0){gui[2]=1;goidt();}}}//Serial.println("IN3");digitalWrite(OUT3,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);}}}
+  if(digitalRead(IN3)==0){if (gui[2]==0){delay(50);if(digitalRead(IN3)==0){gui[2]=1;goidt(0);}}}//Serial.println("IN3");digitalWrite(OUT3,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);}}}
   else if(digitalRead(IN3)==1){if (gui[2]==1){delay(50);if(digitalRead(IN3)==1){gui[2]=0;}}} 
 #endif
   if ( (unsigned long) (millis() - timer_gio) > 10000 ){  

@@ -40,7 +40,7 @@
 //#define OUT_CC true  // Bỏ là khong dung cua cuon
 //#define IN true       // Bỏ là không dùng IN
 //#define INT_SENS true // Bỏ là không dùng IN
-//#define Ver_old true  // Bỏ là dung chan Ver Mới
+#define Ver_old true  // Bỏ là dung chan Ver Mới
 #ifdef Ver_old
   #define status_led  4
 #else

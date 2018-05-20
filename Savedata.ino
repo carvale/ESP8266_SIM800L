@@ -2,7 +2,7 @@ void connect_wifi(){
   
   boolean kq=scanWiFireturn();
   if (kq){
- //   WiFi.begin("mHomeRD", "123789456");
+   //  WiFi.begin("mHomeRD", "123789456");
           WiFi.begin(WiFiConf.sta_ssid, WiFiConf.sta_pwd);
           parseBytes1(WiFiConf.sta_ip, '.', 1, 4, 10);
           parseBytes1(WiFiConf.sta_gateway, '.', 2, 4, 10);
@@ -11,6 +11,7 @@ void connect_wifi(){
           DEBUG_PRINTLN(WiFiConf.sta_ip);
           DEBUG_PRINTLN(WiFiConf.sta_ssid);
  }
+
 }
 boolean scanWiFireturn(void) {
   int founds = WiFi.scanNetworks();
