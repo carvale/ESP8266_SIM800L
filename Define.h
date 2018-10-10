@@ -11,6 +11,7 @@
 ///////////////////////////////////////////
 #define USINGWIFI true   //Bỏ là tắt chức năng wifi
 #define USING_SIM true   // Bỏ là tắt dùng SIM
+#define PIN_CONFIG  4
 ////////////////////////////////
 #ifdef USING_SIM
   #define DEBUG_PRINTLN(x)
@@ -40,7 +41,7 @@
 //#define OUT_CC true  // Bỏ là khong dung cua cuon
 //#define IN true       // Bỏ là không dùng IN
 //#define INT_SENS true // Bỏ là không dùng IN
-#define Ver_old true  // Bỏ là dung chan Ver Mới
+//#define Ver_old true  // Bỏ là dung chan Ver Mới
 #ifdef Ver_old
   #define status_led  4
 #else
@@ -155,7 +156,7 @@ int i=0;
 int cho=0;
 byte statusmang=0;
 byte statusnaptk=0;
-
+int config_status=0;
 long sotien;
 boolean da_kttk=false;
 

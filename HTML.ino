@@ -246,18 +246,11 @@ void setupWiFiConf(void) {
     content1 += F("><br /><br />");
     content += "mHome - Wifi Setup";
     content += F("</title></head><body>");
-    if (WiFiConf.sta_language[0]=='1'){
-    
-    content += F("<h1>Cài Đặt Wifi</h1>");
-    content += content1;
-    content += F("<input type='submit' id=\"submitbtn\" value='OK' onclick='return confirm(\"Thay Đổi Cài Đặt?\");'></form>");
-    }
-    else
-    {
+
     content += F("<h1>Wifi Setup</h1>");
     content += content1;
    content += F("<input type='submit' id=\"submitbtn\" value='OK' onclick='return confirm(\"Change Settings?\");'></form>");
-    }
+    
     content += F(" </p>");
     content += network_html;
     content += F("</body></html>");
@@ -290,16 +283,7 @@ server.on("/sdt_conf", []() {
     content1 +=F("><br /><br />");
     content += "mHome - Phone Number";
     content += F("</title></head><body>");
-    if (WiFiConf.sta_language[0]=='1'){
-    content += F("<h1>Cài Đặt SDT</h1>");
-    content += content1;
-    content += F("<input type='submit' id=\"submitbtn\" value='OK' onclick='return confirm(\"Thay Đổi Cài Đặt?\");'></form>");
-    content += F("<li>Cài đặt số điện thoại nhận tin nhắn và cuộc gọi (Tối đa 4 số)");
-    content += F("<li>Các số không sử dụng vui lòng gắn dâu 'x' vào");
-    //content += F("<input type='submit' value='OK' onclick='return confirm(\"Thay Đổi Cài Đặt?\");'></form>");
-    }
-    else
-    {
+
     content += F("<h1>Phone Numbers Setup</h1>");
     content += content1;
     content += F("<input type='submit' id=\"submitbtn\" value='OK' onclick='return confirm(\"Change Settings?\");'></form>");
@@ -307,7 +291,7 @@ server.on("/sdt_conf", []() {
     content += F("<li>The phone numbers for call and sms function");
     content += F("<li>Pls, Check 'x' for phone number not using");
     
-    }
+    
     content += F(" </p>");
     //content += network_html;
     content += F("</body></html>");
@@ -410,8 +394,8 @@ server.on("/set_noidung", []() {
     String new_phone = server.arg("newphone");
     new_phone.toCharArray(sdt_new, sizeof(sdt_new));
     guitinnhan=7;
-   String content = FPSTR(header); content += FPSTR(begin_title);
-   content += WiFiConf.module_id;
+    String content = FPSTR(header); content += FPSTR(begin_title);
+    content += WiFiConf.module_id;
     content += F(".local - set WiFi");
     content += F("</title></head><body>");
     content += F("<h1>ok</h1>");
@@ -429,20 +413,19 @@ server.on("/set_noidung", []() {
   server.on("/set_call", []() {
    // noidung = server.arg("text");
     guitinnhan=2;
-   String content = FPSTR(header); content += FPSTR(begin_title);
-   content += WiFiConf.module_id;
+    String content = FPSTR(header); content += FPSTR(begin_title);
+    content += WiFiConf.module_id;
     content += F(".local - set WiFi");
     content += F("</title></head><body>");
     content += F("<h1>Set WiFi of ESP8266</h1>");
     server.send(200, "text/html", content);
   });
-    server.on("/set_call2", []() {
-   // noidung = server.arg("text");
-       String new_phone = server.arg("newphone");
+  server.on("/set_call2", []() {
+    String new_phone = server.arg("newphone");
     new_phone.toCharArray(sdt_new, sizeof(sdt_new));
     guitinnhan=8;
-   String content = FPSTR(header); content += FPSTR(begin_title);
-   content += WiFiConf.module_id;
+    String content = FPSTR(header); content += FPSTR(begin_title);
+    content += WiFiConf.module_id;
     content += F(".local - set WiFi");
     content += F("</title></head><body>");
     content += F("<h1>Set WiFi of ESP8266</h1>");
@@ -564,26 +547,8 @@ server.on("/mang_didong", []() {
     String content = FPSTR(header); content += FPSTR(begin_title);
     content += F("mHome - USSD");
     content += F("</title></head><body>");
-    if (WiFiConf.sta_language[0]=='1'){
-    content += F("<h1>Cài đặt thông số Mạng</h1>");
-    content += F("<p>Wifi đang kết nối: ");
-    content += WiFiConf.sta_ssid;
-    content += F("</p><form method='get' action='set_mang_didong'>");
-    content += F("<li><label for='manap' class=\"req\">Mã Nạp:</label><input name='manap' class=\"txt\" id='manap' maxlength=32 value=");
-    content += String(WiFiConf.sta_manap);
-    content += F(" ><br /><br />");
 
-    content +=F("<li><label for='makttk' class=\"req\">Mã KTTK : </label> <input  name='makttk' class=\"txt\" id='pwdhc2' value=");
-    content += String(WiFiConf.sta_makttk) ;
-    content += F("><br /><br />");
-    content += F("<input type='submit' value='OK' onclick='return confirm(\"Bạn có muốn thay đổi cài đặt ?\");'></form>");
-    content += F(" </p>");
-    content += F("<li>Thông tin");
-    content += F("<li>Mã nhắn tin để kiểm tra tài khoản : KTTK");
-    content += F("<li>Mã nhắn tin để nạp tiền : NAP:mã thẻ.");
-     }
-     else
-     {
+     
     content += F("<h1>Cellular network settings</h1>");
     content += F("<p>Wifi conected : ");
     content += WiFiConf.sta_ssid;
@@ -602,7 +567,7 @@ server.on("/mang_didong", []() {
 
     content += F("<li>Ex: Recharge code:55555555555 . USSD: *100* ->*100*55555555555#");
     content += F("<li>USSD for Balance Check : *101#,*102#...");
-    }
+    
      content += F("</body></html>");
     server.send(200, F("text/html"), content);
   });
@@ -625,6 +590,17 @@ server.on("/mang_didong", []() {
 
   
   server.on("/hc2_conf", []() {    
+      int vitricat=0;
+      for (byte tam=0;tam<sizeof(WiFiConf.sta_passhc);tam++){
+            if (WiFiConf.sta_passhc[tam]=='#'){
+                  vitricat=tam;
+                  break;
+            }
+      }
+     // Serial.println(vitricat);
+      int encodedLen = base64_enc_len(vitricat-1);
+      char encoded[encodedLen];
+      base64_encode(encoded, WiFiConf.sta_passhc, vitricat);
     String content = FPSTR(header); content += FPSTR(begin_title);
     String    content1 = ipStr;
     content1 += F(" ( ");
@@ -663,6 +639,7 @@ server.on("/mang_didong", []() {
     content += F(" </p>");
     content += F("<li>Thông tin HC2");
     content += F("<li>Password định dạng User:password#   VD: admin:admin# ");
+
     //content += F("<li>Voi Phien ban V4.101 USer la email nene cuoi dau  can them vao dau '.' nhu 'Kythuat@kimsontien.com:Pass123@.'");
      }
      else
@@ -679,6 +656,8 @@ server.on("/mang_didong", []() {
     content += F("<li>Information HC2");
     content += F("<li>Format User:password#  Ex: admin:admin123#");
     }
+        content += F("<li>Base 64: ");
+    content += encoded;
      content += F("</body></html>");
     server.send(200, F("text/html"), content);
   });
@@ -808,101 +787,9 @@ void setupWeb(void) {
   
 
       content +=F("<fieldset>");
-    if (WiFiConf.sta_language[0]=='1'){
-       content +=F("<legend style = \"color: red; font-size : 150%;align: Center\">Cài Đặt</legend>");
+      content +=F("<legend style = \"color: red; font-size : 150%;align: Center\">Configuration</legend>");
       content +=F("<fieldset>");
-              content +=F("<legend><a href='/wifi_conf'>Cài đặt Wifi</a></legend>");
-              content += F("<li>Wifi : ");
-              if (statusmang==0) {        
-                  content += F("NOT Connected");
-                  content += F("</br><li>IP: 192.168.4.1:4999 ( ");
-                  content += WiFiConf.module_id;
-                  content += F(" )</p>");
-              }
-              else{
-                  content += WiFiConf.sta_ssid;
-                  content += F("</br><li>IP: ");
-                  content += ipStr;
-                  content += F(" ( ");
-                  content += WiFiConf.module_id;
-                  content += F(" )</p>");
-               }
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-              content +=F("<legend><a href='/hc2_conf'>Cài Đặt HC2</a></legend>");
-              content +=F("<li>Phần này mục đích điền các thông số của HC2 và các biến global nhằm cho việc truyền dữ liệu lên HC2");
-              content +=F("<li>Password HC2 định dạng là admin:password#");
-              content +=F("<li>Trạng Thái:");
-              content +=SerialHC2;
-              content +=F("<li>HC2 response :");
-              content +=noidung;
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-              content +=F("<legend><a href='/sdt_conf'>Cài Đặt SDT</a></legend>");
-              content +=F("<li>Phần này cài SDT lưu lại cho việc nhắn tin và gọi điện");
-              content +=F("<li>Phone Number 1:");
-              content +=String(WiFiConf.sta_SDT1);
-              content +=F("<li>Phone Number 2:");
-              content +=String(WiFiConf.sta_SDT2);
-              content +=F("<li>Phone Number 3:");
-              content +=String(WiFiConf.sta_SDT3);
-             content +=F("<li>Phone Number 4:");
-              content +=String(WiFiConf.sta_SDT4);  
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-              content +=F("<legend><a href='/mang_didong'>Cài mạng di động</a></legend>");
-              content +=F("<li>Mô tả: Điền các thông tin để kiểm tra tài khoảng và nạp tiền điện thoại");
-              content += String(WiFiConf.sta_manap);
-             // content += F(" ><br /><br />");
-
-            content +=F("<li>USSD for Balance Check : ");
-            content += String(WiFiConf.sta_makttk) ;
-            content +=F("<li>USSD response : ");
-            content += noidungkiemtratk ;
-    content +=F("</fieldset>");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-    content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Test Function</legend>");
-      content +=F("<fieldset>");
-              content +=F("<legend><a href='/tinnhan'>Tin Nhắn</a></legend>");
-              content +=F("<li>Mô tả: gởi tin nhắn bằng tay.");
-              content +=F("<li>Dùng để kiểm tra chức năng nhắn tin.");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-              content +=F("<legend><a href='/cuocgoi'>Cuộc Gọi</a></legend>");
-              content +=F("<li>Mô tả: gọi điện bằng tay.");
-              content +=F("<li>Dùng để kiểm tra chức năng gọi điện.");
-    content +=F("</fieldset>");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-    content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Other Function</legend>");
-      content +=F("<fieldset>");
-              content +=F("<legend><a href='/module_id'>Cài tên Wifi</a></legend>");
-              content +=F("<li>Không cài đặt");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-              content +=F("<legend><a href='/firmware'>Update Chương Trình</a></legend>");
-              content +=F("<li>Update firmware mới nhất cho HC2");
-              content +=F("<li>Status : V2.4 - 11/07/2017 - Tự động cảnh báo khi tài khoảng thấp hơn 15000, Pin cho PCB mới");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-              content +=F("<legend><a href='/Reboot'>Khởi động lại</a></legend>");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-            content +=F("<legend><a href='/Reset1'>Reset</a></legend>");
-            content +=F("Mô tả: Xóa hết thông số, trở vệ mặc định ban đầu");
-    content +=F("</fieldset>");
-    content +=F("</fieldset>");
-    content +=F("<fieldset>");
-    content +=F("<legend style =\"color: red; font-size : 150%;align: Center\">Thông tin</legend>");
-    content += F("<li>@ Bản quyền sản phẩm thuộc mHome - Giải pháp nhà thông minh");
-    content += F("<li>Cty TNHH Kim Sơn Tiến");
-    content += F("<li>Phòng R&D");
-    }
-    else
-    {    content +=F("<legend style = \"color: red; font-size : 150%;align: Center\">Configuration</legend>");
-      content +=F("<fieldset>");
-     content +=F("<legend><a href='/wifi_conf'>Wifi setting</a></legend>");
+      content +=F("<legend><a href='/wifi_conf'>Wifi setting</a></legend>");
               if (statusmang==0){ 
                   content += F("<li>Wifi : ");
                   content += F("Not Connected");
@@ -973,7 +860,7 @@ void setupWeb(void) {
       content +=F("<fieldset>");
               content +=F("<legend><a href='/firmware'>Firmware Update</a></legend>");
               content +=F("<li>Description: This section is for update firmware of GSM controller");
-              content +=F("<li>Status : V2.4 - 11/07/2017 -  Tự động cảnh báo khi tài khoảng thấp hơn 15000, Pin cho PCB mới");
+              content +=F("<li>Status : V2.5 - 10/10/2018 -  Button Config");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/Reboot'>Reboot GSM Controller</a></legend>");
@@ -991,7 +878,7 @@ void setupWeb(void) {
     content += F("<li>Designed by mHome - R&D Department");
     content += F("<li>Made in VietNam");
     
-    }
+    
     content +=F("</fieldset>");
     content += F("</body></html>");
     server.send(200, "text/html", content);

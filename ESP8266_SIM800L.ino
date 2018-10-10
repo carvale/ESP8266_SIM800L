@@ -25,55 +25,56 @@ void power_on();
 void send_SMS(String noidungsms="");
 void kttk(String nd);
 int limit_connect=0;
+void blink_led(int thoigian){
+  digitalWrite(status_led,HIGH);
+          delay(thoigian);
+          digitalWrite(status_led,LOW);
+          delay(thoigian);
+          digitalWrite(status_led,HIGH);
+          delay(thoigian);
+          digitalWrite(status_led,LOW);
+}
 void setup() {
   //wdt_disable();
-#ifdef OUT_CC || INT_SENS
-  pinMode(IN3, INPUT);
-  pinMode(IN2, INPUT);
-  pinMode(IN1, INPUT);
- 
-  pinMode(OUT1, OUTPUT);
-  pinMode(OUT2, OUTPUT);
-  pinMode(OUT3, OUTPUT);
-  digitalWrite(OUT1,LOW);
-  digitalWrite(OUT2,LOW);
-  digitalWrite(OUT3,LOW);
-#endif
+  pinMode(PIN_CONFIG, INPUT);
  pinMode(status_led, OUTPUT);
   digitalWrite(status_led,LOW);
   //digitalWrite(5,LOW);
     Serial.begin(115200);
-#ifdef USING_SIM
-  digitalWrite(status_led,HIGH);
-  delay(1000);
-  digitalWrite(status_led,LOW);
-  delay(1000);
-  digitalWrite(status_led,HIGH);
-  delay(1000);
-  digitalWrite(status_led,LOW);
-  delay(1000);
-  digitalWrite(status_led,HIGH);
-  delay(1000);
-  digitalWrite(status_led,LOW);
-#endif
-  //delay(5000);
+    if ( digitalRead(PIN_CONFIG) == LOW ){
+      delay(1500);
+      if ( digitalRead(PIN_CONFIG) == LOW ){
+          config_status=1;
+          blink_led(200);
+      }
+    }
+    else {
+         blink_led(1000);
+    }
   EEPROM.begin(1024);
   delay(10);
   if (!loadWiFiConf()) {
     resetModuleId();
     saveWiFiConf();
   }
-  WiFi.setAutoConnect(false);
-  WiFi.setAutoReconnect(false);
-  WiFi.mode(WIFI_AP_STA);
-  WiFi.softAP(WiFiConf.module_id, "88888888");
-  scanWiFi();
-  connect_wifi();
-  statusmang=waitConnected();
-  if (WiFi.status() == WL_CONNECTED) {
-    digitalWrite(status_led,LOW);
-   WiFi.softAPdisconnect(true);
-  } 
+   if ( config_status == 1 ){
+      WiFi.setAutoConnect(false);
+      WiFi.setAutoReconnect(false);
+      WiFi.mode(WIFI_AP);
+      WiFi.softAP("GSM-Config", "88888888");
+   }
+   else {
+      WiFi.setAutoConnect(true);
+      WiFi.setAutoReconnect(true);
+      WiFi.mode(WIFI_STA);
+      scanWiFi();
+      connect_wifi();
+      statusmang=waitConnected();
+      if (WiFi.status() == WL_CONNECTED) {
+        digitalWrite(status_led,LOW);
+      } 
+   }
+
   httpUpdater.setup(&server, update_path, update_username, update_password);
   setupWeb();
   setupWiFiConf();  
@@ -99,6 +100,7 @@ void setup() {
 void loop() {
 #ifdef USINGWIFI
   server.handleClient();
+  if ( config_status == 0 ){
   switch (WiFi.status())
   {
     case WL_CONNECTED:
@@ -106,10 +108,11 @@ void loop() {
               statusmang=1;
               cho=0;
               limit_connect=0;
-              WiFi.softAPdisconnect(true);}     
+             // WiFi.softAPdisconnect(true);
+              }     
               break;
     default:
-          if (statusmang!=0){ statusmang=0;timeled = millis();WiFi.softAPdisconnect(false);} 
+          if (statusmang!=0){ statusmang=0;timeled = millis();} 
           if (limit_connect > 3){ESP.reset();}
           if (cho>=50){
             connect_wifi();
@@ -126,6 +129,7 @@ void loop() {
                   }
           } 
           break;
+  }
   }
 #endif
 #ifdef USING_SIM
@@ -167,91 +171,8 @@ void loop() {
     SetVariHC("SIM_DTMF",String(dtmf_sim));
     dtmf_sim=10;
   }
- /* switch (dtmf_sim){
-    case 0:
-          SetVariHC("SIM_DTMF","0");
-          dtmf_sim=10;
-          break;
-    case 1:
-          SetVariHC("SIM_DTMF","1");
-          dtmf_sim=10;
-          break;
-    case 2:
-          SetVariHC("SIM_DTMF","2");
-          dtmf_sim=10;
-          break;
-    case 3:
-          SetVariHC("SIM_DTMF","3");
-          dtmf_sim=10;
-          break;
-    case 4:
-          SetVariHC("SIM_DTMF","4");
-          dtmf_sim=10;
-          break;
-    case 5:
-          SetVariHC("SIM_DTMF","5");
-          dtmf_sim=10;
-          break;
-    case 6:
-          SetVariHC("SIM_DTMF","6");
-          dtmf_sim=10;
-          break;
-    case 7:
-          SetVariHC("SIM_DTMF","7");
-          dtmf_sim=10;
-          break;
-    case 8:
-          SetVariHC("SIM_DTMF","8");
-          dtmf_sim=10;
-          break;
-    case 9:
-          SetVariHC("SIM_DTMF","9");
-          dtmf_sim=10;
-          break;
-  }*/
 #endif
-#ifdef OUT_CC
-switch (out){
-  case 1:
-    digitalWrite(OUT1,HIGH);
-    digitalWrite(OUT2,LOW);
-    digitalWrite(OUT3,LOW);
-    out=4;
-    break;
-  case 2:
-    digitalWrite(OUT1,LOW);
-    digitalWrite(OUT2,HIGH);
-    digitalWrite(OUT3,LOW);
-    out=4;
-    break;
-  case 3:
-    digitalWrite(OUT1,LOW);
-    digitalWrite(OUT2,LOW);
-    digitalWrite(OUT3,HIGH);
-    out=4;
-    break;
-  case 4:
-     delay(10);
-     _int_timeout_relay ++;
-     if (_int_timeout_relay >50){
-      digitalWrite(OUT1,LOW);
-      digitalWrite(OUT2,LOW);
-      digitalWrite(OUT3,LOW);
-      out=0;
-      _int_timeout_relay=0;
-     }
-      break;
-  
-}
-#endif
-#ifdef INT_SENS
-  if(digitalRead(IN1)==0){if (gui[0]==0){delay(50);if(digitalRead(IN1)==0){gui[0]=1;goidt(0);}}} //;Serial.println("IN1");digitalWrite(OUT3,HIGH); String tinnhan="Alarm 1 OPEN";send_SMS(tinnhan);}}}
-  else if(digitalRead(IN1)==1){if (gui[0]==1){delay(50);if(digitalRead(IN1)==1){gui[0]=0;}}}
-  if(digitalRead(IN2)==0){if (gui[1]==0){delay(50);if(digitalRead(IN2)==0){gui[1]=1;goidt(0);}}}//Serial.println("IN2");digitalWrite(OUT3,HIGH);String tinnhan="Alarm 2 OPEN";send_SMS(tinnhan);}}}
-  else if(digitalRead(IN2)==1){if (gui[1]==1){delay(50);if(digitalRead(IN2)==1){gui[1]=0;}}}
-  if(digitalRead(IN3)==0){if (gui[2]==0){delay(50);if(digitalRead(IN3)==0){gui[2]=1;goidt(0);}}}//Serial.println("IN3");digitalWrite(OUT3,HIGH);String tinnhan="Alarm 3 OPEN";send_SMS(tinnhan);}}}
-  else if(digitalRead(IN3)==1){if (gui[2]==1){delay(50);if(digitalRead(IN3)==1){gui[2]=0;}}} 
-#endif
+
   if ( (unsigned long) (millis() - timer_gio) > 10000 ){  
                           timer_gio = millis();
                           thoigian_gio++;
