@@ -186,7 +186,7 @@ void loop() {
       guitinnhan = 3;
     }
     Serial.println("AT");
-    SetVariHC("SIM_TK","2222");
+    //SetVariHC("SIM_TK","2222");
     if (da_kttk) {
       if (sotien < 15000 && sotien > 1000) {
         da_kttk = false;

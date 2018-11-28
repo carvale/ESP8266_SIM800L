@@ -644,7 +644,10 @@ server.on("/mang_didong", []() {
     content += F("<input type='submit' value='Check'></form>");
     content += F(" </p>");
     content += F("<li>Information HC2");
-        content += F("<li>Base 64: ");
+        content += F("<li>SIM_TK - Tai khoang SIM");
+        content += F("<li>Global1 - Trang Thai ON,OFF,OK");
+        content += F("<li>SIM_DTMF - Status DTMF");
+        content += F("<li>SIM_CALL - Phone number quitclaim calling");
     content += encoded;
      content += F("</body></html>");
     server.send(200, F("text/html"), content);
