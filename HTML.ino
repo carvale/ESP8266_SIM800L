@@ -591,7 +591,7 @@ server.on("/mang_didong", []() {
 
   
   server.on("/hc2_conf", []() {    
-      int vitricat=0;
+    /*  int vitricat=0;
       char tamchar[128];
      sprintf(tamchar, "%s:%s|", WiFiConf.sta_userhc, WiFiConf.sta_passhc);
       for (byte tam=0;tam<sizeof(tamchar);tam++){
@@ -602,7 +602,7 @@ server.on("/mang_didong", []() {
       }
       int encodedLen = base64_enc_len(vitricat-1);
       char encoded[encodedLen];
-      base64_encode(encoded, tamchar, vitricat);
+      base64_encode(encoded, tamchar, vitricat);*/
     String content = FPSTR(header); content += FPSTR(begin_title);
     String    content1 = ipStr;
     content1 += F(" ( ");
@@ -648,7 +648,7 @@ server.on("/mang_didong", []() {
         content += F("<li>Global1 - Trang Thai ON,OFF,OK");
         content += F("<li>SIM_DTMF - Status DTMF");
         content += F("<li>SIM_CALL - Phone number quitclaim calling");
-    content += encoded;
+    //content += encoded;
      content += F("</body></html>");
     server.send(200, F("text/html"), content);
   });

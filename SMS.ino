@@ -64,6 +64,7 @@ void receive_uart() {
                         String bienvari=String(WiFiConf.sta_global1);
                         bienvari.trim();
                         SetVariHC(bienvari,"1");
+                        delay(500);
                         send_SMS("SDT 0"+ String(phone_number) +" ON ARLAM");
                   }
                   else if (strstr(response,"Off") != NULL) {                 
@@ -71,12 +72,14 @@ void receive_uart() {
                         String bienvari=String(WiFiConf.sta_global1);
                         bienvari.trim();
                         SetVariHC(bienvari,"0");
+                        delay(500);
                         send_SMS("SDT 0"+ String(phone_number) +" OFF ARLAM");
                   }
                  else if (strstr(response,"OK") != NULL) {                 
                         String bienvari=String(WiFiConf.sta_global1);
                         bienvari.trim();
                         SetVariHC(bienvari,"OK");
+                        delay(1000);
                         send_SMS("SDT 0"+ String(phone_number) +" Da Kiem Tra : OK");
                   }
                  /* else if (strstr(response,"Tat") != NULL) {                 
