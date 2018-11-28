@@ -97,7 +97,8 @@ struct WiFiConfStruct {
   char sta_gateway[15];
   char sta_subnet[15];
   char sta_iphc2[20];
-  char sta_passhc[100];
+  char sta_userhc[64];
+  char sta_passhc[64];
   char sta_SDT1[15];
   char sta_SDT2[15];
   char sta_SDT3[15];
@@ -115,7 +116,8 @@ struct WiFiConfStruct {
   "192.168.99.120",
   "192.168.99.1",
   "255.255.255.0",
-  "iphc2",
+  "192.168.99.4",
+  "kythuat@kimsontien.com",
   "passhc",
   "x",
   "x",

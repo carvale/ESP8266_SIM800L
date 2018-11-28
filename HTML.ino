@@ -131,6 +131,7 @@ unsigned char b64_lookup(char c) {
   if(c == '/') return 63;
   return -1;
 }
+
 /////////////////////////////////////////////////////////////////////////
 void printWiFiConf(void) {
   Serial.println(WiFiConf.sta_ssid);
@@ -591,16 +592,17 @@ server.on("/mang_didong", []() {
   
   server.on("/hc2_conf", []() {    
       int vitricat=0;
-      for (byte tam=0;tam<sizeof(WiFiConf.sta_passhc);tam++){
-            if (WiFiConf.sta_passhc[tam]=='#'){
+      char tamchar[128];
+     sprintf(tamchar, "%s:%s|", WiFiConf.sta_userhc, WiFiConf.sta_passhc);
+      for (byte tam=0;tam<sizeof(tamchar);tam++){
+            if (tamchar[tam]=='|'){
                   vitricat=tam;
                   break;
             }
       }
-     // Serial.println(vitricat);
       int encodedLen = base64_enc_len(vitricat-1);
       char encoded[encodedLen];
-      base64_encode(encoded, WiFiConf.sta_passhc, vitricat);
+      base64_encode(encoded, tamchar, vitricat);
     String content = FPSTR(header); content += FPSTR(begin_title);
     String    content1 = ipStr;
     content1 += F(" ( ");
@@ -613,7 +615,9 @@ server.on("/mang_didong", []() {
     content1 += F("<li><label for='iphc2' class=\"req\">IP HC2:</label><input name='iphc2' class=\"txt\" id='iphc2' maxlength=32 value=");
     content1 += String(WiFiConf.sta_iphc2);
     content1 += F(" ><br /><br />");
-
+    content1 +=F("<li><label for='userhc2' class=\"req\">User HC2: </label> <input name='userhc2' class=\"txt\"  id='userhc2' value=");
+    content1 += String(WiFiConf.sta_userhc) ;
+    content1 += F("><br /><br />");
     content1 +=F("<li><label for='pwdhc2' class=\"req\">PASS HC2: </label> <input type='password' class=\"txt\" name='pwdhc2' id='pwdhc2' value=");
     content1 += String(WiFiConf.sta_passhc) ;
     content1 += F("><br /><br />");
@@ -629,21 +633,7 @@ server.on("/mang_didong", []() {
     //content1 += F("><br /><br />");  
     content += F("mHome - Wifi Setup");
     content += F("</title></head><body>");
-    if (WiFiConf.sta_language[0]=='1'){
-    content += F("<h1>Cài đặt thông số HC2</h1>");
-    content += F("<p>Wifi đang kết nối: ");
-    content += WiFiConf.sta_ssid;
-    content += F("</br>Địa Chỉ IP: ");
-    content += content1;
-    content += F("<input type='submit'  id=\"submitbtn\" value='OK' onclick='return confirm(\"Bạn có muốn thay đổi cài đặt ?\");'></form>");
-    content += F(" </p>");
-    content += F("<li>Thông tin HC2");
-    content += F("<li>Password định dạng User:password#   VD: admin:admin# ");
 
-    //content += F("<li>Voi Phien ban V4.101 USer la email nene cuoi dau  can them vao dau '.' nhu 'Kythuat@kimsontien.com:Pass123@.'");
-     }
-     else
-     {
     content += F("<h1>HC2 Setting</h1>");
     content += F("<p>Wifi conecting : ");
     content += WiFiConf.sta_ssid;
@@ -654,8 +644,6 @@ server.on("/mang_didong", []() {
     content += F("<input type='submit' value='Check'></form>");
     content += F(" </p>");
     content += F("<li>Information HC2");
-    content += F("<li>Format User:password#  Ex: admin:admin123#");
-    }
         content += F("<li>Base 64: ");
     content += encoded;
      content += F("</body></html>");
@@ -663,6 +651,7 @@ server.on("/mang_didong", []() {
   });
   server.on("/set_hc2_conf", []() {
     String new_IPHC = server.arg("iphc2");
+    String new_userhc = server.arg("userhc2");
     String new_pwdhc = server.arg("pwdhc2");
     String new_global1 = server.arg("global1");
     String new_global2 = server.arg("global2");
@@ -672,7 +661,9 @@ server.on("/mang_didong", []() {
     content += F("</title></head><body>");
     content += F("<h1>Lưu Wifi</h1>");
     if (new_IPHC.length() > 0) {
+      
       new_IPHC.toCharArray(WiFiConf.sta_iphc2, sizeof(WiFiConf.sta_iphc2));
+      new_userhc.toCharArray(WiFiConf.sta_userhc, sizeof(WiFiConf.sta_userhc));
       new_pwdhc.toCharArray(WiFiConf.sta_passhc, sizeof(WiFiConf.sta_passhc));
       new_global1.toCharArray(WiFiConf.sta_global1, sizeof(WiFiConf.sta_global1));
       new_global2.toCharArray(WiFiConf.sta_global2, sizeof(WiFiConf.sta_global2));
@@ -734,7 +725,8 @@ server.on("/mang_didong", []() {
   });
   server.on("/set_Reset1", HTTP_GET, []() {
         String new_IPHC = "192.168.1.10";
-    String new_pwdhc = "admin:admin#";
+        String new_userhc = "admin";
+    String new_pwdhc = "admin";
     String new_global1 ="temp1";
     String new_global2 = "temp2";
     String new_ssid = "mhome";
@@ -755,6 +747,7 @@ server.on("/mang_didong", []() {
       new_gateway.toCharArray(WiFiConf.sta_gateway, sizeof(WiFiConf.sta_gateway));
       new_subnet.toCharArray(WiFiConf.sta_subnet, sizeof(WiFiConf.sta_subnet));
       new_IPHC.toCharArray(WiFiConf.sta_iphc2, sizeof(WiFiConf.sta_iphc2));
+      new_userhc.toCharArray(WiFiConf.sta_userhc, sizeof(WiFiConf.sta_userhc));
       new_pwdhc.toCharArray(WiFiConf.sta_passhc, sizeof(WiFiConf.sta_passhc));
       new_global1.toCharArray(WiFiConf.sta_global1, sizeof(WiFiConf.sta_global1));
       new_global2.toCharArray(WiFiConf.sta_global2, sizeof(WiFiConf.sta_global2));
@@ -860,7 +853,7 @@ void setupWeb(void) {
       content +=F("<fieldset>");
               content +=F("<legend><a href='/firmware'>Firmware Update</a></legend>");
               content +=F("<li>Description: This section is for update firmware of GSM controller");
-              content +=F("<li>Status : V2.5 - 10/10/2018 -  Button Config");
+              content +=F("<li>Status : V2.6 - 28/10/2018 -  Button Config, Put Variable to HC2");
     content +=F("</fieldset>");
     content +=F("<fieldset>");
               content +=F("<legend><a href='/Reboot'>Reboot GSM Controller</a></legend>");
@@ -915,42 +908,36 @@ void parseBytes1(const char* str, char sep, int address, int maxBytes, int base)
 //Set Varuable toi HC2 ////////////////////
 //////////////////////////////////////////
 void SetVariHC(String vari,String giatri) {
-  yield();
-  String PostData = "{\r\n\"name\": \"\",\r\n\"value\":\"\",\r\n\"invokeScenes\":True\r\n}";
-  int vitricat=0;
-      for (byte tam=0;tam<sizeof(WiFiConf.sta_passhc);tam++){
-            if (WiFiConf.sta_passhc[tam]=='#'){
+      HTTPClient http;
+      http.begin("http://" + String(WiFiConf.sta_iphc2) + "/api/globalVariables/"+vari);
+      char* user=WiFiConf.sta_userhc;
+      char* pass=WiFiConf.sta_passhc;
+      http.setAuthorization(user, pass);
+      http.addHeader("Content-Type", "application/json");
+      http.PUT("{\"value\":\"" + giatri + "\",\"invokeScenes\":true}");
+     // http.writeToStream(&Serial);
+      http.end();
+}
+void SetVariHC2Save(String vari,String giatri) { // Theo ma hoa
+      int vitricat=0;    
+      char tamchar[128];
+      sprintf(tamchar, "%s:%s|", WiFiConf.sta_userhc, WiFiConf.sta_passhc);
+      for (byte tam=0;tam<sizeof(tamchar);tam++){
+            if (tamchar[tam]=='|'){
                   vitricat=tam;
                   break;
             }
       }
-     // Serial.println(vitricat);
       int encodedLen = base64_enc_len(vitricat-1);
       char encoded[encodedLen];
-      base64_encode(encoded, WiFiConf.sta_passhc, vitricat);
-     // Serial.println(encoded);
-      String url=String("PUT /api/globalVariables/")+vari;
-      url+= " HTTP/1.1";
-      String url2="Host: "+String(WiFiConf.sta_iphc2);
-      int chieudai=PostData.length()+vari.length()+giatri.length();
-      WiFiClient client;
-  if (client.connect(WiFiConf.sta_iphc2,80)) {
-      client.println(url);  
-      client.println(url2);
-      String url1="Authorization: Basic "+String(encoded);
-      client.println(url1);
-      client.println(F("Content-Type: application/json"));
-      client.print(F("Content-Length: "));
-      client.println(chieudai);
-      client.println();
-      client.print(F("{\r\n\"name\": \""));
-      client.print(vari);
-      client.print(F("\",\r\n\"value\":\""));
-      client.print(giatri);
-      client.println(F("\",\r\n\"invokeScenes\":true\r\n}"));
-      client.stop(); 
-      yield();
-}
+      base64_encode(encoded, tamchar, vitricat);
+      HTTPClient http;
+      http.begin("http://" + String(WiFiConf.sta_iphc2) + "/api/globalVariables/"+vari);
+      http.setAuthorization(encoded);
+      http.addHeader("Content-Type", "application/json");
+      http.PUT("{\"value\":\"" + giatri + "\",\"invokeScenes\":true}");
+      http.writeToStream(&Serial);
+      http.end();
 }
 ////////////////////////////////////
 //Get thông số Hc2 /////////
